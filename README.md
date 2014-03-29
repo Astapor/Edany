@@ -13,6 +13,8 @@ In lexiographic order:
 
 ### Contribute
 
+Ideas https://docs.google.com/document/d/1Z_-pdgKMZzFPCfxX9ixZ87dHRJo_F_HWF2LCLtL9AuU/edit
+
 * Clone.
 * Install Scala, JDK, Sbt.
 * Run `sbt` in the directory.
