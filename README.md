@@ -3,6 +3,14 @@ Edany
 
 Edany
 
+### Credits
+
+In lexiographic order:
+
+* [Christoffer Niska](https://github.com/crisu83)
+* [Kai Sellgren](https://github.com/kaisellgren)
+* [Stanislav Palatnik](https://github.com/stanpalatnik)
+
 ### Contribute
 
 * Clone.
