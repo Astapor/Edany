@@ -8,6 +8,7 @@ object Engine {
   def start(game: Game) {
     try {
       Display.setDisplayMode(game.displayMode)
+      Display.setTitle(WindowTitle)
       Display.create()
     } catch {
       case e: Exception => e.printStackTrace(); System.exit(1337)
@@ -30,6 +31,7 @@ object Engine {
       }
 
       Display.update()
+      Display.setTitle(WindowTitle)
     }
 
     Display.destroy()
