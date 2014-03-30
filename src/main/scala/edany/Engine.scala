@@ -19,14 +19,14 @@ object Engine {
     glOrtho(0, 800, 0, 600, 1, -1)
     glMatrixMode(GL_MODELVIEW)
 
-    loop(60 fps) {
+    loop(600000 fps) {
       // Clear the screen and depth buffer
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
       game.components.foreach{
         case c: DrawableComponent =>
-          c.draw()
           c.update()
+          c.draw()
         case c: Component => c.update()
       }
 

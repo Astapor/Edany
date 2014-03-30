@@ -2,6 +2,7 @@ package edany
 
 import org.lwjgl.Sys
 import org.lwjgl.opengl.Display
+import scala.annotation.tailrec
 
 object Loop {
   def getTime = Sys.getTime * 1000 / Sys.getTimerResolution
@@ -10,8 +11,10 @@ object Loop {
     var fps = 0
     var lastTime = getTime
 
-    while (!Display.isCloseRequested) {
+    @tailrec
+    def step() {
       if (getTime - lastTime > 1000) {
+        Display.setTitle("Edany - FPS: " + fps)
         fps = 0
         lastTime += 1000
       }
@@ -20,6 +23,10 @@ object Loop {
       p
 
       Display.sync(frameRate.fps)
+
+      if (!Display.isCloseRequested) step()
     }
+
+    step()
   }
 }
