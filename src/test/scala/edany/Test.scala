@@ -1,3 +1,5 @@
+import edany.Game
+
 object Test extends App {
-  println("foo")
+  Game.run()
 }
