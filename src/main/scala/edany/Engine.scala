@@ -31,7 +31,6 @@ object Engine {
       }
 
       Display.update()
-      Display.setTitle(WindowTitle)
     }
 
     Display.destroy()

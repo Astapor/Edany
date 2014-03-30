@@ -12,7 +12,6 @@ object Loop {
 
     while (!Display.isCloseRequested) {
       if (getTime - lastTime > 1000) {
-        Display.setTitle("FPS: " + fps)
         fps = 0
         lastTime += 1000
       }
