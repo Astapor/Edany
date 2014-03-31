@@ -8,7 +8,6 @@ object Engine {
   def start(game: Game) {
     try {
       Display.setDisplayMode(game.displayMode)
-      Display.setTitle(WindowTitle)
       Display.create()
     } catch {
       case e: Exception => e.printStackTrace(); System.exit(1337)
@@ -19,7 +18,7 @@ object Engine {
     glOrtho(0, 800, 0, 600, 1, -1)
     glMatrixMode(GL_MODELVIEW)
 
-    loop(600000 fps) {
+    loop(60 fps) {
       // Clear the screen and depth buffer
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
