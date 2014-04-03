@@ -3,7 +3,8 @@ package edany
 import com.badlogic.gdx.math.Rectangle
 import com.badlogic.gdx.graphics.Texture
 
-trait Entity extends DrawableComponent {
+abstract class Entity extends DrawableComponent {
+  def solid: Boolean = false
   def texture: Texture
   def rectangle: Rectangle
 

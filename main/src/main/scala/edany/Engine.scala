@@ -15,10 +15,8 @@ class Engine extends gdx.Game {
     Gdx.gl.glClearColor(0, 0, 0.2f, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-    game.components.foreach{
-      case c: DrawableComponent =>
-        c.update(game)
-        c.draw(game)
+    game.components.foreach {
+      case c: DrawableComponent => c.update(game); c.draw(game)
       case c: Component => c.update(game)
     }
 

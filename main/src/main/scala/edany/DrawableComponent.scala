@@ -1,5 +1,5 @@
 package edany
 
-trait DrawableComponent extends Component {
+abstract class DrawableComponent extends Component {
   def draw(game: Game)
 }

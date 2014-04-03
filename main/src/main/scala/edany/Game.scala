@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.{OrthographicCamera, Texture}
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.{Music, Sound}
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import edany.components.Player
+import edany.components.{Ground, Player}
 import com.badlogic.gdx.math.Rectangle
 
 case class Game(
@@ -36,12 +36,37 @@ object Game {
     music.head._2.setLooping(true)
 
     // Some components!
-    val components = Vector(
-      Player(
-        texture = textures("main/assets/images/player.png"),
-        rectangle = new Rectangle(32, 32, 32, 32)
-      )
+    val componentsBuilder = Vector.newBuilder[Component]
+
+    componentsBuilder += Player(
+      texture = textures("main/assets/images/player.png"),
+      rectangle = new Rectangle(96, 500, 32, 32)
     )
+
+    // Some terrain.
+    for (i <- 2 to 10) {
+      componentsBuilder += Ground(
+        texture = textures("main/assets/images/ground.png"),
+        rectangle = new Rectangle(i * 32, 32, 32, 32)
+      )
+    }
+
+    componentsBuilder += Ground(
+      texture = textures("main/assets/images/ground.png"),
+      rectangle = new Rectangle(320, 64, 32, 32)
+    )
+
+    componentsBuilder += Ground(
+      texture = textures("main/assets/images/ground.png"),
+      rectangle = new Rectangle(320, 96, 32, 32)
+    )
+
+    for (i <- 1 to 5) {
+      componentsBuilder += Ground(
+        texture = textures("main/assets/images/ground.png"),
+        rectangle = new Rectangle(320 + i * 32, 96, 32, 32)
+      )
+    }
 
     Game(
       textures = textures,
@@ -49,7 +74,7 @@ object Game {
       music = music,
       spriteBatch = new SpriteBatch(),
       camera = camera,
-      components = components
+      components = componentsBuilder.result()
     )
   }
 }
