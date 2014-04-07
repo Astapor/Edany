@@ -4,16 +4,21 @@ import edany._
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Keys
+import edany.util._
+import edany.util.Rectangle
+import edany.util.Vector2
+import edany.util.Dimension
+import scala.Some
 
 case class Player(
-  texture: Texture,
   override val position: Vector2,
-  override val size: Dimension
+  override val size: Dimension,
+  texture: Texture,
+  jumpSpeed: Float = 0,
+  currentGravity: Float = 0
 ) extends Actor with Logical with Drawable {
   val weight = 60 kg
   val movementSpeed = 200
-  var jumpSpeed: Float = 0
-  var currentGravity: Float = 0
 
   override def draw(scene: Scene) {
     scene.spriteBatch.setProjectionMatrix(scene.camera.combined)
@@ -22,66 +27,96 @@ case class Player(
     scene.spriteBatch.end()
   }
 
-  override def update(scene: Scene) = {
+  override def update(scene: Scene) = Player.update(this, scene)
+}
+
+object Player {
+  private[Player] def update(player: Player, scene: Scene) = {
     // Is there anything below us based on current gravity?
-    Util.findSolidAt(scene, Rectangle(position.x, position.y - currentGravity - 1, size.width, size.height)) match {
+    val player2 = Player.handleGravity(player, scene)
+    val player3 = Player.handleJumping(player2, scene)
+
+    scene.copy(
+      components = scene.components.map((c: Component) => {
+        if (c == player) player3 else c
+      })
+    )
+  }
+
+  /** Handles player jumping. */
+  private[Player] def handleJumping(player: Player, scene: Scene): Player = {
+    if (player.jumpSpeed > 0) {
+      // Is there anything above us based on our jump speed?
+      Util.findSolidAt(scene, Rectangle(player.position.x, player.position.y + player.jumpSpeed, player.size.width, player.size.height)) match {
+        case Some(e: Actor) =>
+          // Ouch, we hit our head on something!
+          val newY = e.position.y - e.size.height
+
+          player.copy(jumpSpeed = 0, position = player.position.copy(y = newY))
+        case _ =>
+          val amount = player.jumpSpeed * Gdx.graphics.getDeltaTime
+          val newY = player.position.y + amount
+
+          var jumpSpeed = player.jumpSpeed - amount
+          if (jumpSpeed < 1) jumpSpeed = 0
+
+          player.copy(jumpSpeed = jumpSpeed, position = player.position.copy(y = newY))
+      }
+    } else player
+  }
+
+  /** Handles gravitational changes. */
+  private[Player] def handleGravity(player: Player, scene: Scene): Player = {
+    Util.findSolidAt(scene, Rectangle(player.position.x, player.position.y - player.currentGravity - 1, player.size.width, player.size.height)) match {
       case Some(e: Actor) =>
-        if (currentGravity > 0) {
+        if (player.currentGravity > 0) {
           // We hit something, position us on top of it and reset gravity.
-          position.y = e.position.y + size.height
-          currentGravity = 0
-          jumpSpeed = 0
+          val newY = e.position.y + player.size.height
+
+          player.copy(
+            jumpSpeed = 0,
+            currentGravity = 0,
+            position = player.position.copy(y = newY)
+          )
         } else {
-          handleMovement(scene, onGround = true)
+          Player.handleMovement(player, scene, onGround = true)
         }
       case _ =>
         // We are falling down.
-        position.y -= currentGravity
-        currentGravity += GravityManager.calculateGravityMomentum(weight) * Gdx.graphics.getDeltaTime
+        val newY = player.position.y - player.currentGravity
+        val newGravity = player.currentGravity + GravityManager.calculateGravityMomentum(player.weight) * Gdx.graphics.getDeltaTime
 
-        handleMovement(scene, onGround = false)
+        val player2 = player.copy(
+          position = player.position.copy(y = newY),
+          currentGravity = newGravity
+        )
+
+        Player.handleMovement(player2, scene, onGround = false)
     }
-
-    if (jumpSpeed > 0) {
-      // Is there anything above us based on our jump speed?
-      Util.findSolidAt(scene, Rectangle(position.x, position.y + jumpSpeed, size.width, size.height)) match {
-        case Some(e: Actor) =>
-          // Ouch, we hit our head on something!
-          jumpSpeed = 0
-          position.y = e.position.y - e.size.height
-          // health -= jumpSpeed
-        case _ =>
-          val amount = jumpSpeed * Gdx.graphics.getDeltaTime
-          position.y += amount
-
-          jumpSpeed -= amount
-          if (jumpSpeed < 1) jumpSpeed = 0
-      }
-    }
-
-    scene
   }
 
   /** Handles the player movement. The player moves slower on air, faster on ground. */
-  private[this] def handleMovement(scene: Scene, onGround: Boolean) = {
+  private[Player] def handleMovement(player: Player, scene: Scene, onGround: Boolean): Player = {
     val factor = if (onGround) 1 else 0.5.toFloat
 
-    if (onGround && Gdx.input.isKeyPressed(Keys.UP)) jumpSpeed = 600
+    val player2 = if (onGround && Gdx.input.isKeyPressed(Keys.UP)) player.copy(jumpSpeed = 600) else player
 
-    if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-      val amount = movementSpeed * Gdx.graphics.getDeltaTime * factor
-      Util.findSolidAt(scene, Rectangle(position.x - amount, position.y, size.width, size.height)) match {
-        case Some(e: Actor) => position.x = e.position.x + e.size.width
-        case _ => position.x -= amount
+    val player3 = if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+      val amount = player2.movementSpeed * Gdx.graphics.getDeltaTime * factor
+      Util.findSolidAt(scene, Rectangle(player2.position.x - amount, player2.position.y, player2.size.width, player2.size.height)) match {
+        case Some(e: Actor) => player2.copy(position = player2.position.copy(x = e.position.x + e.size.width))
+        case _ => player2.copy(position = player2.position.copy(x = player2.position.x - amount))
       }
-    }
+    } else player2
 
-    if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-      val amount = movementSpeed * Gdx.graphics.getDeltaTime * factor
-      Util.findSolidAt(scene, Rectangle(position.x + amount, position.y, size.width, size.height)) match {
-        case Some(e: Actor) => position.x = e.position.x - size.width
-        case _ => position.x += amount
+    val player4 = if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+      val amount = player3.movementSpeed * Gdx.graphics.getDeltaTime * factor
+      Util.findSolidAt(scene, Rectangle(player3.position.x + amount, player3.position.y, player3.size.width, player3.size.height)) match {
+        case Some(e: Actor) => player3.copy(position = player3.position.copy(x = e.position.x - player3.size.width))
+        case _ => player3.copy(position = player3.position.copy(x = player3.position.x + amount))
       }
-    }
+    } else player3
+
+    player4
   }
 }

@@ -1,4 +1,6 @@
-package edany
+package edany.util
+
+import edany.{Actor, Component, Scene}
 
 object Util {
   /** Returns true if the given place is empty/free of solid objects. */

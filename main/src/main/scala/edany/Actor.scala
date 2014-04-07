@@ -1,5 +1,7 @@
 package edany
 
+import edany.util.{Dimension, Rectangle, Vector2}
+
 /** An entity occupies space in the spatial world and has a location. */
 abstract class Actor extends Component {
   def solid: Boolean = false

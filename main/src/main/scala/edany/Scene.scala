@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.{OrthographicCamera, Texture}
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.{Music, Sound}
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import edany.level.{LevelLoader, LevelBuilder}
 
 case class Scene(
   textures: Map[String, Texture],

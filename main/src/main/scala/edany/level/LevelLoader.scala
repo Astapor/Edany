@@ -1,9 +1,11 @@
-package edany
+package edany.level
 
 import com.badlogic.gdx.files.FileHandle
-import scala.xml.{XML, Node}
-import edany.components.{Player, Ground}
 import com.badlogic.gdx.graphics.Texture
+import edany.Component
+import edany.components.{Player, Ground}
+import edany.util.{Dimension, Vector2}
+import scala.xml.{XML, Node}
 
 object LevelLoader {
   def loadLevel(file: FileHandle, textures: Map[String, Texture]): Level = {

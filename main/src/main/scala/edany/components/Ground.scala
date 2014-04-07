@@ -2,7 +2,7 @@ package edany.components
 
 import com.badlogic.gdx.graphics.Texture
 import edany._
-import edany.Dimension
+import edany.util.{Vector2, Dimension}
 
 case class Ground(
   texture: Texture,

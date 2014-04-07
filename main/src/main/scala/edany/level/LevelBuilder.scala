@@ -1,7 +1,7 @@
-package edany
+package edany.level
 
-import com.badlogic.gdx.{Input, Gdx}
-import edany.components.Ground
+import com.badlogic.gdx.Gdx
+import edany.{Scene, Logical, Component}
 
 class LevelBuilder extends Component with Logical {
   override def update(scene: Scene) = {
