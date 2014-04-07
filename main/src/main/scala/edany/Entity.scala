@@ -1,19 +1,10 @@
 package edany
 
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.graphics.Texture
-
-abstract class Entity extends DrawableComponent {
+/** An entity occupies space in the spatial world and has a location. */
+abstract class Entity extends Component {
   def solid: Boolean = false
-  def texture: Texture
-  def rectangle: Rectangle
+  def position: Vector2 = Vector2()
+  def size: Dimension = Dimension()
 
-  def update(game: Game) {}
-
-  def draw(game: Game) {
-    game.spriteBatch.setProjectionMatrix(game.camera.combined)
-    game.spriteBatch.begin()
-    game.spriteBatch.draw(texture, rectangle.x, rectangle.y)
-    game.spriteBatch.end()
-  }
+  lazy val rectangle = Rectangle(position.x, position.y, size.width, size.height)
 }

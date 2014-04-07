@@ -1,5 +1,3 @@
 package edany
 
-abstract class Component {
-  def update(game: Game)
-}
+abstract class Component
