@@ -1,7 +1,7 @@
 package edany
 
 /** An entity occupies space in the spatial world and has a location. */
-abstract class Entity extends Component {
+abstract class Actor extends Component {
   def solid: Boolean = false
   def position: Vector2 = Vector2()
   def size: Dimension = Dimension()

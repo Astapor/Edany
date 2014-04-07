@@ -9,7 +9,7 @@ case class Player(
   texture: Texture,
   override val position: Vector2,
   override val size: Dimension
-) extends Entity with Logical with Drawable {
+) extends Actor with Logical with Drawable {
   val weight = 60 kg
   val movementSpeed = 200
   var jumpSpeed: Float = 0
@@ -24,8 +24,8 @@ case class Player(
 
   override def update(scene: Scene) = {
     // Is there anything below us based on current gravity?
-    Util.findSolidAt(scene, new Rectangle(rectangle.x, rectangle.y - currentGravity - 1, rectangle.width, rectangle.height)) match {
-      case Some(e: Entity) =>
+    Util.findSolidAt(scene, Rectangle(position.x, position.y - currentGravity - 1, size.width, size.height)) match {
+      case Some(e: Actor) =>
         if (currentGravity > 0) {
           // We hit something, position us on top of it and reset gravity.
           position.y = e.position.y + size.height
@@ -44,8 +44,8 @@ case class Player(
 
     if (jumpSpeed > 0) {
       // Is there anything above us based on our jump speed?
-      Util.findSolidAt(scene, new Rectangle(rectangle.x, rectangle.y + jumpSpeed, rectangle.width, rectangle.height)) match {
-        case Some(e: Entity) =>
+      Util.findSolidAt(scene, Rectangle(position.x, position.y + jumpSpeed, size.width, size.height)) match {
+        case Some(e: Actor) =>
           // Ouch, we hit our head on something!
           jumpSpeed = 0
           position.y = e.position.y - e.size.height
@@ -70,17 +70,17 @@ case class Player(
 
     if (Gdx.input.isKeyPressed(Keys.LEFT)) {
       val amount = movementSpeed * Gdx.graphics.getDeltaTime * factor
-      Util.findSolidAt(scene, new Rectangle(rectangle.x - amount, rectangle.y, rectangle.width, rectangle.height)) match {
-        case Some(e: Entity) => rectangle.x = e.rectangle.x + e.rectangle.width
-        case _ => rectangle.x -= amount
+      Util.findSolidAt(scene, Rectangle(position.x - amount, position.y, size.width, size.height)) match {
+        case Some(e: Actor) => position.x = e.position.x + e.size.width
+        case _ => position.x -= amount
       }
     }
 
     if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
       val amount = movementSpeed * Gdx.graphics.getDeltaTime * factor
-      Util.findSolidAt(scene, new Rectangle(rectangle.x + amount, rectangle.y, rectangle.width, rectangle.height)) match {
-        case Some(e: Entity) => rectangle.x = e.rectangle.x - rectangle.width
-        case _ => rectangle.x += amount
+      Util.findSolidAt(scene, Rectangle(position.x + amount, position.y, size.width, size.height)) match {
+        case Some(e: Actor) => position.x = e.position.x - size.width
+        case _ => position.x += amount
       }
     }
   }

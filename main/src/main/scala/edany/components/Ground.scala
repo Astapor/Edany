@@ -8,7 +8,7 @@ case class Ground(
   texture: Texture,
   override val position: Vector2,
   override val size: Dimension
-) extends Entity with Drawable {
+) extends Actor with Drawable {
   override def solid = true
 
   def draw(scene: Scene) {
