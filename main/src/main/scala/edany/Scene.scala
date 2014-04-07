@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.{OrthographicCamera, Texture}
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.{Music, Sound}
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import edany.components.Player
 
 case class Scene(
   textures: Map[String, Texture],
@@ -12,7 +11,8 @@ case class Scene(
   music: Map[String, Music],
   camera: OrthographicCamera,
   spriteBatch: SpriteBatch,
-  components: Seq[Component]
+  components: Seq[Component],
+  levelBuilder: LevelBuilder = new LevelBuilder
 )
 
 object Scene {
@@ -29,20 +29,13 @@ object Scene {
 
     // Miscellaneous.
     val camera = new OrthographicCamera()
-    camera.setToOrtho(false, 800, 600)
+    camera.setToOrtho(false, 800, 640)
 
     // Let's loop some hard coded music!
     music.head._2.setLooping(true)
     music.head._2.play()
 
-    // Some components!
-    val componentsBuilder = Vector.newBuilder[Component]
-
-    componentsBuilder += Player(
-      texture = textures("main/assets/images/player.png"),
-      position = Vector2(96, 500),
-      size = Dimension(32, 32)
-    )
+    val level = LevelLoader.loadLevel(Gdx.files.internal("main/assets/levels/level1.xml"), textures)
 
     Scene(
       textures = textures,
@@ -50,7 +43,7 @@ object Scene {
       music = music,
       spriteBatch = new SpriteBatch(),
       camera = camera,
-      components = componentsBuilder.result()
+      components = level.components
     )
   }
 }

@@ -1,5 +1,16 @@
 <level>
   <components>
-    <ground x="64" y="320" width="32" height="32" />
+    <player x="128" y="320" />
+
+    <ground x="32" y="0" width="32" height="32" />
+    <ground x="64" y="0" width="32" height="32" />
+    <ground x="96" y="0" width="32" height="32" />
+    <ground x="128" y="0" width="32" height="32" />
+    <ground x="160" y="0" width="32" height="32" />
+    <ground x="192" y="0" width="32" height="32" />
+    <ground x="192" y="32" width="32" height="32" />
+    <ground x="192" y="64" width="32" height="32" />
+    <ground x="224" y="64" width="32" height="32" />
+    <ground x="256" y="64" width="32" height="32" />
   </components>
 </level>
