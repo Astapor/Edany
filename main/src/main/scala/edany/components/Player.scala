@@ -17,7 +17,7 @@ case class Player(
   jumpSpeed: Float = 0,
   currentGravity: Float = 0
 ) extends Actor with Logical with Drawable {
-  val weight = 60 kg
+  val weight = 65 kg
   val movementSpeed = 200
 
   override def draw(scene: Scene) {
@@ -46,18 +46,19 @@ object Player {
   /** Handles player jumping. */
   private[Player] def handleJumping(player: Player, scene: Scene): Player = {
     if (player.jumpSpeed > 0) {
+      val jumpAmount = player.jumpSpeed * Gdx.graphics.getDeltaTime
+
       // Is there anything above us based on our jump speed?
-      Util.findSolidAt(scene, Rectangle(player.position.x, player.position.y + player.jumpSpeed, player.size.width, player.size.height)) match {
+      Util.findSolidAt(scene, Rectangle(player.position.x, player.position.y + jumpAmount, player.size.width, player.size.height)) match {
         case Some(e: Actor) =>
           // Ouch, we hit our head on something!
           val newY = e.position.y - e.size.height
 
           player.copy(jumpSpeed = 0, position = player.position.copy(y = newY))
         case _ =>
-          val amount = player.jumpSpeed * Gdx.graphics.getDeltaTime
-          val newY = player.position.y + amount
+          val newY = player.position.y + jumpAmount
 
-          var jumpSpeed = player.jumpSpeed - amount
+          var jumpSpeed = player.jumpSpeed - jumpAmount
           if (jumpSpeed < 1) jumpSpeed = 0
 
           player.copy(jumpSpeed = jumpSpeed, position = player.position.copy(y = newY))
@@ -99,7 +100,7 @@ object Player {
   private[Player] def handleMovement(player: Player, scene: Scene, onGround: Boolean): Player = {
     val factor = if (onGround) 1 else 0.5.toFloat
 
-    val player2 = if (onGround && Gdx.input.isKeyPressed(Keys.UP)) player.copy(jumpSpeed = 600) else player
+    val player2 = if (onGround && Gdx.input.isKeyPressed(Keys.UP)) player.copy(jumpSpeed = 700) else player
 
     val player3 = if (Gdx.input.isKeyPressed(Keys.LEFT)) {
       val amount = player2.movementSpeed * Gdx.graphics.getDeltaTime * factor

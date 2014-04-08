@@ -7,7 +7,7 @@ object Test extends App {
   cfg.title = "Edany"
   cfg.useGL20 = false
   cfg.width = 800
-  cfg.height = 600
+  cfg.height = 640
 
   new LwjglApplication(new Engine, cfg)
 }

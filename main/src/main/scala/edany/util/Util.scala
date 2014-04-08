@@ -8,7 +8,13 @@ object Util {
 
   /** Returns the solid entity instance at the given position if any. */
   def findSolidAt(scene: Scene, rectangle: Rectangle): Option[Component] = scene.components.find {
-    case e: Actor => e.solid && e.rectangle.overlaps(rectangle)
+    case c: Actor => c.solid && c.rectangle.overlaps(rectangle)
+    case _ => false
+  }
+
+  /** Finds any component at the given position. */
+  def findComponentAt(scene: Scene, position: Vector2) = scene.components.find {
+    case c: Actor => c.rectangle.contains(position)
     case _ => false
   }
 }

@@ -26,6 +26,5 @@ class Engine extends gdx.Game {
     })
 
     scene.camera.update()
-    scene = scene.levelBuilder.update(scene)
   }
 }

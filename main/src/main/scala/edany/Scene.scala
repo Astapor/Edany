@@ -12,8 +12,7 @@ case class Scene(
   music: Map[String, Music],
   camera: OrthographicCamera,
   spriteBatch: SpriteBatch,
-  components: Seq[Component],
-  levelBuilder: LevelBuilder = new LevelBuilder
+  components: Seq[Component]
 )
 
 object Scene {
@@ -44,7 +43,7 @@ object Scene {
       music = music,
       spriteBatch = new SpriteBatch(),
       camera = camera,
-      components = level.components
+      components = level.components :+ new LevelBuilder
     )
   }
 }

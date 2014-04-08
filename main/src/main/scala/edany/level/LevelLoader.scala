@@ -2,10 +2,10 @@ package edany.level
 
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.Texture
-import edany.Component
+import edany.{Scene, Component}
 import edany.components.{Player, Ground}
 import edany.util.{Dimension, Vector2}
-import scala.xml.{XML, Node}
+import scala.xml.{Text, Attribute, XML, Node}
 
 object LevelLoader {
   def loadLevel(file: FileHandle, textures: Map[String, Texture]): Level = {
@@ -33,5 +33,27 @@ object LevelLoader {
     })
 
     Level(components = components.result())
+  }
+
+  def saveLevel(file: FileHandle, scene: Scene) {
+    def toXml(c: Component): Node = c match {
+      case a: Ground =>
+        <ground width="32" height="32"></ground> % Attribute(None, "x", Text(a.position.x.toInt.toString), Attribute(None, "y", Text(a.position.y.toInt.toString), xml.Null))
+      case a: Player => <player></player> % Attribute(None, "x", Text(a.position.x.toInt.toString), Attribute(None, "y", Text(a.position.y.toInt.toString), xml.Null))
+    }
+
+    def canBeSaved(c: Component) = c match {
+      case a: Ground => true
+      case a: Player => true
+      case _ => false
+    }
+
+    val document = <level>
+      <components>
+        { scene.components.filter(canBeSaved).map(toXml) }
+      </components>
+    </level>
+
+    XML.save(file.file().getPath, document)
   }
 }
