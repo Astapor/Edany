@@ -25,11 +25,11 @@ Ideas https://docs.google.com/document/d/1Z_-pdgKMZzFPCfxX9ixZ87dHRJo_F_HWF2LCLt
 
 ##### Setting up Google Drive sync
 
-Download and install Google Drive app. Go to https://drive.google.com/folderview?id=0B-3-X85VysdNUlczNkNFZnZJc3c and click 'Add to my Drive' or alternative choose from the left side menu "Shared with Me" -> then find and 'Add to my Drive'.
+Download and install <a href="https://tools.google.com/dlpage/drive/?hl=en">Google Drive app</a>. Go to [Edany Google drive folder](https://drive.google.com/folderview?id=0B-3-X85VysdNUlczNkNFZnZJc3c), open in Google Drive and click 'Add to my Drive' or alternatively choose from the left side menu "Shared with Me" -> then find and 'Add to my Drive'.
 
 "Add to my Drive" does not copy it, it merely references it. After adding it to Drive, Google Drive app will auto-sync it on your computer. We can now just drop files in there just like any other folder.
 
-Then finally create a symlink from local "Google Drive/edany/assets" -> "/path/to/edany/main/assets".
+Then finally create a symlink from local "Google Drive/edany/assets" -> "/path/to/edany/main/assets". We now have an automatically syncing storage between contributors that does not bloat our VCS.
 
 ##### Setting up LibGDX
 
