@@ -31,6 +31,8 @@ Download and install <a href="https://tools.google.com/dlpage/drive/?hl=en">Goog
 
 Then finally create a symlink from local "Google Drive/edany/assets" -> "/path/to/edany/main/assets". We now have an automatically syncing storage between contributors that does not bloat our VCS.
 
+Note: there's main/local/assets for local testing purposes (like generating test maps and loading them). Also note that the symlink isn't writable, you have to do modifications in the actual folder, not the symlink'd folder.
+
 ##### Setting up LibGDX
 
 Unfortunately this has to be done manually after SBT.
