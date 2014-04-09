@@ -1,6 +1,7 @@
 package edany.util
 
 import edany.{Actor, Component, Scene}
+import java.io.File
 
 object Util {
   /** Returns true if the given place is empty/free of solid objects. */
@@ -16,5 +17,11 @@ object Util {
   def findComponentAt(scene: Scene, position: Vector2) = scene.components.find {
     case c: Actor => c.rectangle.contains(position)
     case _ => false
+  }
+
+  /** Recursively lists files. */
+  def recursiveListFiles(f: File): Seq[File] = {
+    val these = f.listFiles
+    these ++ these.filter(_.isDirectory).flatMap(recursiveListFiles)
   }
 }

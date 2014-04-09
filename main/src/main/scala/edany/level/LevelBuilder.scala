@@ -2,17 +2,18 @@ package edany.level
 
 import com.badlogic.gdx.{Input, Gdx}
 import edany.{Actor, Scene, Logical, Component}
-import edany.components.Ground
 import edany.util.{Dimension, Vector2}
 import com.badlogic.gdx.Input.Keys
+import edany.components.ground.Ground
+import com.badlogic.gdx.graphics.Texture
 
 class LevelBuilder extends Component with Logical {
   override def update(scene: Scene) = {
     val x = Math.round(Gdx.input.getX / 32) * 32
-    val y = 640 - 32 - Math.round(Gdx.input.getY / 32) * 32
+    val y = Math.round(Gdx.input.getY / 32) * 32
 
     if (Gdx.input.isKeyPressed(Keys.S)) {
-      LevelLoader.saveLevel(Gdx.files.internal("main/assets/levels/level1.xml"), scene)
+      LevelLoader.saveLevel(Gdx.files.internal("main/local/assets/test-level.xml"), scene)
     }
 
     val components = if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
@@ -30,7 +31,7 @@ class LevelBuilder extends Component with Logical {
         }
       }
 
-      if (!exists) components :+ Ground(texture = scene.textures("main/assets/images/ground.png"), position = Vector2(x, y), size = Dimension(32, 32))
+      if (!exists) components :+ Ground(texture = scene.assets.get("main/assets/images/ground.png", classOf[Texture]), position = Vector2(x, y), size = Dimension(32, 32))
       else components
     } else components
 

@@ -12,19 +12,23 @@ class Engine extends gdx.Game {
   }
 
   override def render() {
-    Gdx.gl.glClearColor(0, 0, 0.2f, 1)
-    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+    if (scene.assets.update()) {
+      Gdx.gl.glClearColor(0, 0, 0.2f, 1)
+      Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-    scene.components.foreach((c: Component) => {
-      val isLogical = c.isInstanceOf[Logical]
-      val isDrawable = c.isInstanceOf[Drawable]
+      scene.components.foreach((c: Component) => {
+        val isLogical = c.isInstanceOf[Logical]
+        val isDrawable = c.isInstanceOf[Drawable]
 
-      if (isLogical) scene = c.asInstanceOf[Logical].update(scene)
-      if (isDrawable) c.asInstanceOf[Drawable].draw(scene)
+        if (isLogical) scene = c.asInstanceOf[Logical].update(scene)
+        if (isDrawable) c.asInstanceOf[Drawable].draw(scene)
 
-      if (!isLogical && !isDrawable) throw new Exception("Components should be either logical or drawable, or both.")
-    })
+        if (!isLogical && !isDrawable) throw new Exception("Components should be either logical or drawable, or both.")
+      })
 
-    scene.camera.update()
+      scene.camera.update()
+    } else {
+      Gdx.graphics.setTitle("Loading: " + scene.assets.getProgress)
+    }
   }
 }

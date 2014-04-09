@@ -1,5 +1,6 @@
 *.class
 *.log
+/main/assets
 
 # sbt specific
 .cache/

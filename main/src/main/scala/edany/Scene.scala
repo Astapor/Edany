@@ -5,45 +5,51 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.audio.{Music, Sound}
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import edany.level.{LevelLoader, LevelBuilder}
+import com.badlogic.gdx.assets.AssetManager
+import java.io.File
+import edany.util.Util
 
 case class Scene(
-  textures: Map[String, Texture],
-  sounds: Map[String, Sound],
-  music: Map[String, Music],
   camera: OrthographicCamera,
   spriteBatch: SpriteBatch,
-  components: Seq[Component]
+  components: Seq[Component],
+  assets: AssetManager
 )
 
 object Scene {
   def create(): Scene = {
-    // Let's load some content.
-    val texturePaths = Seq("main/assets/images/droplet.png", "main/assets/images/ground.png", "main/assets/images/player.png")
-    val textures = texturePaths.map((p) => (p, new Texture(Gdx.files.internal(p)))).toMap
+    val assets = new AssetManager()
 
-    val soundPaths = Seq("main/assets/sounds/waterdrop.wav")
-    val sounds = soundPaths.map((p) => (p, Gdx.audio.newSound(Gdx.files.internal(p)))).toMap
+    // Load assets.
+    val allowedTypes = Seq("png", "jpg", "jpeg", "gif", "xml", "mp3", "wav")
+    val assetTypes = Map[String, Class[_]]("images" -> classOf[Texture], "music" -> classOf[Music], "sounds" -> classOf[Sound])
+    assetTypes.foreach {
+      case (folderName, classType) =>
+        Util.recursiveListFiles(new File(s"main/assets/$folderName")).foreach((file: File) => {
+          if (allowedTypes.exists((typ: String) => file.getPath.endsWith(typ))) assets.load(file.getPath, classType)
+        })
+    }
 
-    val musicPaths = Seq("main/assets/music/raining.mp3")
-    val music = musicPaths.map((p) => (p, Gdx.audio.newMusic(Gdx.files.internal(p)))).toMap
+    assets.finishLoading()
 
     // Miscellaneous.
-    val camera = new OrthographicCamera()
-    camera.setToOrtho(false, 800, 640)
+    val camera = new OrthographicCamera
+    camera.setToOrtho(true, Gdx.graphics.getWidth, Gdx.graphics.getHeight)
 
     // Let's loop some hard coded music!
-    music.head._2.setLooping(true)
-    music.head._2.play()
+    val m: Music = assets.get("main/assets/music/BloodAndIron.mp3", classOf[Music])
+    m.play()
+    m.setLooping(true)
+    m.setVolume(0.5.toFloat)
 
-    val level = LevelLoader.loadLevel(Gdx.files.internal("main/assets/levels/level1.xml"), textures)
+    // Load a test level for dev purposes.
+    val level = LevelLoader.loadLevel(assets, Gdx.files.internal("main/local/assets/test-level.xml"))
 
     Scene(
-      textures = textures,
-      sounds = sounds,
-      music = music,
       spriteBatch = new SpriteBatch(),
       camera = camera,
-      components = level.components :+ new LevelBuilder
+      components = level.components :+ new LevelBuilder,
+      assets = assets
     )
   }
 }

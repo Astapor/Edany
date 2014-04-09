@@ -3,12 +3,14 @@ package edany.level
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.Texture
 import edany.{Scene, Component}
-import edany.components.{Player, Ground}
+import edany.components.Player
 import edany.util.{Dimension, Vector2}
 import scala.xml.{Text, Attribute, XML, Node}
+import edany.components.ground.Ground
+import com.badlogic.gdx.assets.AssetManager
 
 object LevelLoader {
-  def loadLevel(file: FileHandle, textures: Map[String, Texture]): Level = {
+  def loadLevel(assets: AssetManager, file: FileHandle): Level = {
     val document = XML.loadFile(file.file())
     val components = Vector.newBuilder[Component]
 
@@ -21,14 +23,14 @@ object LevelLoader {
         val width = node.attribute("width").get.text.toInt
         val height = node.attribute("height").get.text.toInt
 
-        components += Ground(position = Vector2(x, y), size = Dimension(width, height), texture = textures("main/assets/images/ground.png"))
+        components += Ground(position = Vector2(x, y), size = Dimension(width, height), texture = assets.get("main/assets/images/brick.png", classOf[Texture]))
       }
 
       if (node.label == "player") {
         val x = node.attribute("x").get.text.toInt
         val y = node.attribute("y").get.text.toInt
 
-        components += Player(position = Vector2(x, y), size = Dimension(32, 32), texture = textures("main/assets/images/player.png"))
+        components += Player(position = Vector2(x, y), size = Dimension(32, 32), texture = assets.get("main/assets/images/player.png", classOf[Texture]))
       }
     })
 

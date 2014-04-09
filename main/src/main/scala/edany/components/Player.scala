@@ -16,16 +16,9 @@ case class Player(
   texture: Texture,
   jumpSpeed: Float = 0,
   currentGravity: Float = 0
-) extends Actor with Logical with Drawable {
+) extends Actor with Logical with Drawable with SimpleDrawer {
   val weight = 65 kg
   val movementSpeed = 200
-
-  override def draw(scene: Scene) {
-    scene.spriteBatch.setProjectionMatrix(scene.camera.combined)
-    scene.spriteBatch.begin()
-    scene.spriteBatch.draw(texture, position.x, position.y)
-    scene.spriteBatch.end()
-  }
 
   override def update(scene: Scene) = Player.update(this, scene)
 }
@@ -49,17 +42,15 @@ object Player {
       val jumpAmount = player.jumpSpeed * Gdx.graphics.getDeltaTime
 
       // Is there anything above us based on our jump speed?
-      Util.findSolidAt(scene, Rectangle(player.position.x, player.position.y + jumpAmount, player.size.width, player.size.height)) match {
+      Util.findSolidAt(scene, Rectangle(player.position.x, player.position.y - jumpAmount, player.size.width, player.size.height)) match {
         case Some(e: Actor) =>
           // Ouch, we hit our head on something!
-          val newY = e.position.y - e.size.height
+          val newY = e.position.y + e.size.height
 
-          player.copy(jumpSpeed = 0, position = player.position.copy(y = newY))
+          player.copy(jumpSpeed = 0, currentGravity = 0, position = player.position.copy(y = newY))
         case _ =>
-          val newY = player.position.y + jumpAmount
-
-          var jumpSpeed = player.jumpSpeed - jumpAmount
-          if (jumpSpeed < 1) jumpSpeed = 0
+          val newY = player.position.y - jumpAmount
+          val jumpSpeed = (player.jumpSpeed - jumpAmount) max 0
 
           player.copy(jumpSpeed = jumpSpeed, position = player.position.copy(y = newY))
       }
@@ -68,11 +59,11 @@ object Player {
 
   /** Handles gravitational changes. */
   private[Player] def handleGravity(player: Player, scene: Scene): Player = {
-    Util.findSolidAt(scene, Rectangle(player.position.x, player.position.y - player.currentGravity - 1, player.size.width, player.size.height)) match {
+    Util.findSolidAt(scene, Rectangle(player.position.x, player.position.y + player.size.height, player.size.width, player.currentGravity + 1)) match {
       case Some(e: Actor) =>
         if (player.currentGravity > 0) {
           // We hit something, position us on top of it and reset gravity.
-          val newY = e.position.y + player.size.height
+          val newY = e.position.y - player.size.height
 
           player.copy(
             jumpSpeed = 0,
@@ -84,7 +75,7 @@ object Player {
         }
       case _ =>
         // We are falling down.
-        val newY = player.position.y - player.currentGravity
+        val newY = player.position.y + player.currentGravity
         val newGravity = player.currentGravity + GravityManager.calculateGravityMomentum(player.weight) * Gdx.graphics.getDeltaTime
 
         val player2 = player.copy(
@@ -98,7 +89,7 @@ object Player {
 
   /** Handles the player movement. The player moves slower on air, faster on ground. */
   private[Player] def handleMovement(player: Player, scene: Scene, onGround: Boolean): Player = {
-    val factor = if (onGround) 1 else 0.5.toFloat
+    val factor = if (onGround) 1 else 0.75.toFloat
 
     val player2 = if (onGround && Gdx.input.isKeyPressed(Keys.UP)) player.copy(jumpSpeed = 700) else player
 
