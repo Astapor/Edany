@@ -16,15 +16,12 @@ class Engine extends gdx.Game {
       Gdx.gl.glClearColor(0, 0, 0.2f, 1)
       Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-      scene.components.foreach((c: Component) => {
-        val isLogical = c.isInstanceOf[Logical]
-        val isDrawable = c.isInstanceOf[Drawable]
-
-        if (isLogical) scene = c.asInstanceOf[Logical].update(scene)
-        if (isDrawable) c.asInstanceOf[Drawable].draw(scene)
-
-        if (!isLogical && !isDrawable) throw new Exception("Components should be either logical or drawable, or both.")
-      })
+      scene.components.foreach {
+        case c: Logical with Drawable => scene = c.update(scene); c.draw(scene)
+        case c: Logical => scene = c.update(scene)
+        case c: Drawable => c.draw(scene)
+        case _ => throw new Exception("uh")
+      }
 
       scene.camera.update()
     } else {

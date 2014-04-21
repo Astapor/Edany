@@ -31,7 +31,7 @@ class LevelBuilder extends Component with Logical {
         }
       }
 
-      if (!exists) components :+ Ground(texture = scene.assets.get("main/assets/images/ground.png", classOf[Texture]), position = Vector2(x, y), size = Dimension(32, 32))
+      if (!exists) components :+ Ground(texture = scene.assets.get("main/assets/images/grass.jpg", classOf[Texture]), position = Vector2(x, y), size = Dimension(32, 32))
       else components
     } else components
 

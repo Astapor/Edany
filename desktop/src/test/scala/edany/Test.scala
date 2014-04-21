@@ -1,6 +1,7 @@
 package edany
 
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplicationConfiguration, LwjglApplication}
+import scala.annotation.tailrec
 
 object Test extends App {
   val cfg = new LwjglApplicationConfiguration
